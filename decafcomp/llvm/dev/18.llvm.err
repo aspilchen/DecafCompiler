@@ -1,0 +1,4 @@
+Error: unexpected character '&'in input
+1: syntax error at char 1
+; ModuleID = 'Test'
+source_filename = "Test"

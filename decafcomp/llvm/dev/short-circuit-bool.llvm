@@ -1,0 +1,89 @@
+; ModuleID = 'C'
+source_filename = "Test"
+
+@globalstring = private unnamed_addr constant [4 x i8] c"bar\00", align 1
+@globalstring.1 = private unnamed_addr constant [4 x i8] c"foo\00", align 1
+
+declare void @print_int(i32)
+
+declare void @print_string(i8*)
+
+define i1 @foo(i32 %x) {
+entry:
+  %x1 = alloca i32
+  store i32 %x, i32* %x1
+  call void @print_string(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @globalstring.1, i32 0, i32 0))
+  %x2 = load i32, i32* %x1
+  %tempGt = icmp sgt i32 %x2, 200
+  ret i1 %tempGt
+  ret i1 false
+}
+
+define i1 @bar(i32 %x, i32 %y) {
+entry:
+  %x1 = alloca i32
+  store i32 %x, i32* %x1
+  %y2 = alloca i32
+  store i32 %y, i32* %y2
+  call void @print_string(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @globalstring, i32 0, i32 0))
+  %x3 = load i32, i32* %x1
+  %y4 = load i32, i32* %y2
+  %tempNe = icmp ne i32 %x3, %y4
+  ret i1 %tempNe
+  ret i1 false
+}
+
+define i32 @main() {
+entry:
+  %x = alloca i32
+  store i32 0, i32* %x
+  %y = alloca i32
+  store i32 0, i32* %y
+  %w = alloca i1
+  store i1 false, i1* %w
+  store i32 99, i32* %x
+  store i32 201, i32* %y
+  %x1 = load i32, i32* %x
+  %tempLt = icmp slt i32 %x1, 100
+  br i1 %tempLt, label %scEnd, label %noSC
+
+noSC:                                             ; preds = %entry
+  %x2 = load i32, i32* %x
+  %calltmp = call i1 @foo(i32 %x2)
+  br i1 %calltmp, label %noSC3, label %scEnd4
+
+scEnd:                                            ; preds = %scEnd4, %entry
+  %phival8 = phi i1 [ %tempLt, %entry ], [ %tempOr, %scEnd4 ]
+  br i1 %phival8, label %scEnd10, label %noSC9
+
+noSC3:                                            ; preds = %noSC
+  %x5 = load i32, i32* %x
+  %y6 = load i32, i32* %y
+  %calltmp7 = call i1 @bar(i32 %x5, i32 %y6)
+  %tempAnd = and i1 %calltmp, %calltmp7
+  br label %scEnd4
+
+scEnd4:                                           ; preds = %noSC3, %noSC
+  %phival = phi i1 [ %calltmp, %noSC ], [ %tempAnd, %noSC3 ]
+  %tempOr = or i1 %tempLt, %phival
+  br label %scEnd
+
+noSC9:                                            ; preds = %scEnd
+  br i1 false, label %noSC11, label %scEnd12
+
+scEnd10:                                          ; preds = %scEnd12, %scEnd
+  %phival15 = phi i1 [ %phival8, %scEnd ], [ %tempOr14, %scEnd12 ]
+  store i1 %phival15, i1* %w
+  %w16 = load i1, i1* %w
+  %arg = zext i1 %w16 to i32
+  call void @print_int(i32 %arg)
+  ret i32 0
+
+noSC11:                                           ; preds = %noSC9
+  br label %scEnd12
+
+scEnd12:                                          ; preds = %noSC11, %noSC9
+  %phival13 = phi i1 [ false, %noSC9 ], [ false, %noSC11 ]
+  %tempOr14 = or i1 %phival8, %phival13
+  br label %scEnd10
+}

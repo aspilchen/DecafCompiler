@@ -1,0 +1,117 @@
+; ModuleID = 'C'
+source_filename = "Test"
+
+@globalstring = private unnamed_addr constant [2 x i8] c"O\00", align 1
+@globalstring.1 = private unnamed_addr constant [3 x i8] c"NO\00", align 1
+@globalstring.2 = private unnamed_addr constant [2 x i8] c"K\00", align 1
+
+declare void @print_string(i8*)
+
+define i32 @main() {
+entry:
+  br label %if
+
+if:                                               ; preds = %entry
+  br i1 true, label %noSC, label %scEnd
+
+ifTrue:                                           ; preds = %scEnd14
+  br label %if17
+
+noSC:                                             ; preds = %if
+  br label %scEnd
+
+scEnd:                                            ; preds = %noSC, %if
+  %phival = phi i1 [ true, %if ], [ true, %noSC ]
+  br i1 %phival, label %noSC1, label %scEnd2
+
+noSC1:                                            ; preds = %scEnd
+  %tempAnd = and i1 %phival, false
+  br label %scEnd2
+
+scEnd2:                                           ; preds = %noSC1, %scEnd
+  %phival3 = phi i1 [ %phival, %scEnd ], [ %tempAnd, %noSC1 ]
+  br i1 %phival3, label %scEnd5, label %noSC4
+
+noSC4:                                            ; preds = %scEnd2
+  br i1 true, label %noSC6, label %scEnd7
+
+scEnd5:                                           ; preds = %scEnd7, %scEnd2
+  %phival9 = phi i1 [ %phival3, %scEnd2 ], [ %tempOr, %scEnd7 ]
+  br i1 %phival9, label %scEnd11, label %noSC10
+
+noSC6:                                            ; preds = %noSC4
+  br label %scEnd7
+
+scEnd7:                                           ; preds = %noSC6, %noSC4
+  %phival8 = phi i1 [ true, %noSC4 ], [ false, %noSC6 ]
+  %tempOr = or i1 %phival3, %phival8
+  br label %scEnd5
+
+noSC10:                                           ; preds = %scEnd5
+  br label %scEnd11
+
+scEnd11:                                          ; preds = %noSC10, %scEnd5
+  %phival12 = phi i1 [ %phival9, %scEnd5 ], [ %phival9, %noSC10 ]
+  br i1 %phival12, label %scEnd14, label %noSC13
+
+noSC13:                                           ; preds = %scEnd11
+  %tempOr15 = or i1 %phival12, true
+  br label %scEnd14
+
+scEnd14:                                          ; preds = %noSC13, %scEnd11
+  %phival16 = phi i1 [ %phival12, %scEnd11 ], [ %tempOr15, %noSC13 ]
+  br i1 %phival16, label %ifTrue, label %ifEnd
+
+ifEnd:                                            ; preds = %ifEnd26, %scEnd14
+  call void @print_string(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @globalstring.2, i32 0, i32 0))
+  ret i32 0
+
+if17:                                             ; preds = %ifTrue
+  br i1 false, label %scEnd20, label %noSC19
+
+ifTrue18:                                         ; preds = %scEnd20
+  call void @print_string(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @globalstring, i32 0, i32 0))
+  br label %if27
+
+noSC19:                                           ; preds = %if17
+  br i1 true, label %noSC21, label %scEnd22
+
+scEnd20:                                          ; preds = %scEnd22, %if17
+  %phival25 = phi i1 [ false, %if17 ], [ %tempOr24, %scEnd22 ]
+  br i1 %phival25, label %ifTrue18, label %ifEnd26
+
+noSC21:                                           ; preds = %noSC19
+  br label %scEnd22
+
+scEnd22:                                          ; preds = %noSC21, %noSC19
+  %phival23 = phi i1 [ true, %noSC19 ], [ true, %noSC21 ]
+  %tempOr24 = or i1 false, %phival23
+  br label %scEnd20
+
+ifEnd26:                                          ; preds = %ifEnd35, %scEnd20
+  br label %ifEnd
+
+if27:                                             ; preds = %ifTrue18
+  br i1 true, label %noSC29, label %scEnd30
+
+ifTrue28:                                         ; preds = %scEnd33
+  call void @print_string(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @globalstring.1, i32 0, i32 0))
+  br label %ifEnd35
+
+noSC29:                                           ; preds = %if27
+  br label %scEnd30
+
+scEnd30:                                          ; preds = %noSC29, %if27
+  %phival31 = phi i1 [ true, %if27 ], [ false, %noSC29 ]
+  br i1 %phival31, label %scEnd33, label %noSC32
+
+noSC32:                                           ; preds = %scEnd30
+  br label %scEnd33
+
+scEnd33:                                          ; preds = %noSC32, %scEnd30
+  %phival34 = phi i1 [ %phival31, %scEnd30 ], [ %phival31, %noSC32 ]
+  br i1 %phival34, label %ifTrue28, label %ifEnd35
+
+ifEnd35:                                          ; preds = %ifTrue28, %scEnd33
+  br label %ifEnd26
+}

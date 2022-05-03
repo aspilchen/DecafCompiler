@@ -1,0 +1,56 @@
+; ModuleID = 'Test'
+source_filename = "Test"
+
+declare void @print_int(i32)
+
+define i32 @main() {
+entry:
+  %x = alloca i32
+  store i32 0, i32* %x
+  br label %if
+
+if:                                               ; preds = %entry
+  br i1 true, label %ifTrue, label %ifEnd
+
+ifTrue:                                           ; preds = %if
+  br i1 true, label %noSC, label %scEnd
+
+ifEnd:                                            ; preds = %scEnd10, %if
+  ret i32 0
+
+noSC:                                             ; preds = %ifTrue
+  br label %scEnd
+
+scEnd:                                            ; preds = %noSC, %ifTrue
+  %phival = phi i1 [ true, %ifTrue ], [ true, %noSC ]
+  %arg = zext i1 %phival to i32
+  call void @print_int(i32 %arg)
+  br i1 true, label %noSC1, label %scEnd2
+
+noSC1:                                            ; preds = %scEnd
+  br label %scEnd2
+
+scEnd2:                                           ; preds = %noSC1, %scEnd
+  %phival3 = phi i1 [ true, %scEnd ], [ false, %noSC1 ]
+  %arg4 = zext i1 %phival3 to i32
+  call void @print_int(i32 %arg4)
+  br i1 false, label %noSC5, label %scEnd6
+
+noSC5:                                            ; preds = %scEnd2
+  br label %scEnd6
+
+scEnd6:                                           ; preds = %noSC5, %scEnd2
+  %phival7 = phi i1 [ false, %scEnd2 ], [ false, %noSC5 ]
+  %arg8 = zext i1 %phival7 to i32
+  call void @print_int(i32 %arg8)
+  br i1 false, label %noSC9, label %scEnd10
+
+noSC9:                                            ; preds = %scEnd6
+  br label %scEnd10
+
+scEnd10:                                          ; preds = %noSC9, %scEnd6
+  %phival11 = phi i1 [ false, %scEnd6 ], [ false, %noSC9 ]
+  %arg12 = zext i1 %phival11 to i32
+  call void @print_int(i32 %arg12)
+  br label %ifEnd
+}

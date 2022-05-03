@@ -1,0 +1,61 @@
+; ModuleID = 'DivByZero'
+source_filename = "Test"
+
+declare void @print_int(i32)
+
+define i32 @main() {
+entry:
+  %x = alloca i32
+  store i32 0, i32* %x
+  %y = alloca i32
+  store i32 0, i32* %y
+  store i32 5, i32* %x
+  store i32 0, i32* %y
+  br label %if
+
+if:                                               ; preds = %entry
+  %x1 = load i32, i32* %x
+  %tempLt = icmp slt i32 %x1, 6
+  br i1 %tempLt, label %scEnd, label %noSC
+
+ifTrue:                                           ; preds = %scEnd
+  %x4 = load i32, i32* %x
+  call void @print_int(i32 %x4)
+  br label %ifEnd
+
+noSC:                                             ; preds = %if
+  %x2 = load i32, i32* %x
+  %y3 = load i32, i32* %y
+  %tempDiv = sdiv i32 %x2, %y3
+  %tempEq = icmp eq i32 %tempDiv, 0
+  %tempOr = or i1 %tempLt, %tempEq
+  br label %scEnd
+
+scEnd:                                            ; preds = %noSC, %if
+  %phival = phi i1 [ %tempLt, %if ], [ %tempOr, %noSC ]
+  br i1 %phival, label %ifTrue, label %ifEnd
+
+ifEnd:                                            ; preds = %ifTrue, %scEnd
+  br label %if5
+
+if5:                                              ; preds = %ifEnd
+  %x7 = load i32, i32* %x
+  %tempLt8 = icmp slt i32 %x7, 5
+  br i1 %tempLt8, label %noSC9, label %scEnd10
+
+ifTrue6:                                          ; preds = %scEnd10
+  %y13 = load i32, i32* %y
+  call void @print_int(i32 %y13)
+  br label %ifEnd12
+
+noSC9:                                            ; preds = %if5
+  %tempAnd = and i1 %tempLt8, undef
+  br label %scEnd10
+
+scEnd10:                                          ; preds = %noSC9, %if5
+  %phival11 = phi i1 [ %tempLt8, %if5 ], [ %tempAnd, %noSC9 ]
+  br i1 %phival11, label %ifTrue6, label %ifEnd12
+
+ifEnd12:                                          ; preds = %ifTrue6, %scEnd10
+  ret i32 0
+}

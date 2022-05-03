@@ -1,0 +1,106 @@
+; ModuleID = 'breaktest'
+source_filename = "Test"
+
+declare void @print_string(i8*)
+
+declare void @print_int(i32)
+
+define i32 @main() {
+entry:
+  %i = alloca i32
+  store i32 0, i32* %i
+  store i32 0, i32* %i
+  br label %for
+
+for:                                              ; preds = %increment, %entry
+  %i1 = load i32, i32* %i
+  %tempLt = icmp slt i32 %i1, 20
+  br i1 %tempLt, label %do, label %endfor
+
+do:                                               ; preds = %for
+  br label %if
+
+increment:                                        ; preds = %ifEnd, %ifTrue14
+  %i25 = load i32, i32* %i
+  %tmpAdd = add i32 %i25, 1
+  store i32 %tmpAdd, i32* %i
+  br label %for
+
+endfor:                                           ; preds = %ifTrue14, %endWhile, %for
+  ret i32 0
+
+if:                                               ; preds = %do
+  %i2 = load i32, i32* %i
+  %tempGt = icmp sgt i32 %i2, 1
+  br i1 %tempGt, label %ifTrue, label %ifEnd
+
+ifTrue:                                           ; preds = %if
+  br label %if3
+
+ifEnd:                                            ; preds = %ifEnd7, %if
+  br label %increment
+
+if3:                                              ; preds = %ifTrue
+  %i5 = load i32, i32* %i
+  %tempGt6 = icmp sgt i32 %i5, 2
+  br i1 %tempGt6, label %ifTrue4, label %ifEnd7
+
+ifTrue4:                                          ; preds = %if3
+  br label %if8
+
+ifEnd7:                                           ; preds = %ifEnd12, %if3
+  br label %ifEnd
+
+if8:                                              ; preds = %ifTrue4
+  %i10 = load i32, i32* %i
+  %tempGt11 = icmp sgt i32 %i10, 3
+  br i1 %tempGt11, label %ifTrue9, label %ifEnd12
+
+ifTrue9:                                          ; preds = %if8
+  br label %if13
+
+ifEnd12:                                          ; preds = %ifEnd17, %if8
+  br label %ifEnd7
+
+if13:                                             ; preds = %ifTrue9
+  %i15 = load i32, i32* %i
+  %tempLt16 = icmp slt i32 %i15, 10
+  br i1 %tempLt16, label %ifTrue14, label %ifElse
+
+ifTrue14:                                         ; preds = %if13
+  br label %increment
+  call void @print_int(i32 3)
+  br label %endfor
+  br label %ifEnd17
+
+ifElse:                                           ; preds = %if13
+  br label %if18
+
+ifEnd17:                                          ; preds = %ifTrue14, %ifEnd22
+  br label %ifEnd12
+
+if18:                                             ; preds = %ifElse
+  %i20 = load i32, i32* %i
+  %tempLt21 = icmp slt i32 %i20, 15
+  br i1 %tempLt21, label %ifTrue19, label %ifEnd22
+
+ifTrue19:                                         ; preds = %if18
+  br label %while
+
+ifEnd22:                                          ; preds = %endWhile, %if18
+  br label %ifEnd17
+
+while:                                            ; preds = %do23, %ifTrue19
+  br i1 true, label %do23, label %endWhile
+
+do23:                                             ; preds = %while
+  br label %endWhile
+  br label %endWhile
+  br label %while
+
+endWhile:                                         ; preds = %do23, %do23, %while
+  %i24 = load i32, i32* %i
+  call void @print_int(i32 %i24)
+  br label %endfor
+  br label %ifEnd22
+}

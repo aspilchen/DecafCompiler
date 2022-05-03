@@ -1,0 +1,330 @@
+; ModuleID = 'QuickSort'
+source_filename = "Test"
+
+@list = global [100 x i32] zeroinitializer
+@globalstring = private unnamed_addr constant [16 x i8] c"After sorting:\0A\00", align 1
+@globalstring.1 = private unnamed_addr constant [7 x i8] c"List:\0A\00", align 1
+@globalstring.2 = private unnamed_addr constant [2 x i8] c" \00", align 1
+@globalstring.3 = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
+
+declare void @print_string(i8*)
+
+declare void @print_int(i32)
+
+define void @cr() {
+entry:
+  call void @print_string(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @globalstring.3, i32 0, i32 0))
+  ret void
+}
+
+define void @displayList(i32 %start, i32 %len) {
+entry:
+  %start1 = alloca i32
+  store i32 %start, i32* %start1
+  %len2 = alloca i32
+  store i32 %len, i32* %len2
+  %j = alloca i32
+  store i32 0, i32* %j
+  call void @print_string(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @globalstring.1, i32 0, i32 0))
+  %start3 = load i32, i32* %start1
+  store i32 %start3, i32* %j
+  br label %for
+
+for:                                              ; preds = %increment, %entry
+  %j4 = load i32, i32* %j
+  %start5 = load i32, i32* %start1
+  %len6 = load i32, i32* %len2
+  %tmpAdd = add i32 %start5, %len6
+  %tempLt = icmp slt i32 %j4, %tmpAdd
+  br i1 %tempLt, label %do, label %endfor
+
+do:                                               ; preds = %for
+  %j7 = load i32, i32* %j
+  %arrayIndex = getelementptr i32, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @list, i32 0, i32 0), i32 %j7
+  %loadTmp = load i32, i32* %arrayIndex
+  call void @print_int(i32 %loadTmp)
+  call void @print_string(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @globalstring.2, i32 0, i32 0))
+  br label %if
+
+increment:                                        ; preds = %ifEnd
+  %j17 = load i32, i32* %j
+  %tmpAdd18 = add i32 %j17, 1
+  store i32 %tmpAdd18, i32* %j
+  br label %for
+
+endfor:                                           ; preds = %for
+  ret void
+
+if:                                               ; preds = %do
+  %j8 = load i32, i32* %j
+  %start9 = load i32, i32* %start1
+  %tmpSub = sub i32 %j8, %start9
+  %tmpAdd10 = add i32 %tmpSub, 1
+  %tempSRem = srem i32 %tmpAdd10, 20
+  %tempEq = icmp eq i32 %tempSRem, 0
+  br i1 %tempEq, label %scEnd, label %noSC
+
+ifTrue:                                           ; preds = %scEnd
+  call void @cr()
+  br label %ifEnd
+
+noSC:                                             ; preds = %if
+  %j11 = load i32, i32* %j
+  %tmpAdd12 = add i32 %j11, 1
+  %start13 = load i32, i32* %start1
+  %len14 = load i32, i32* %len2
+  %tmpAdd15 = add i32 %start13, %len14
+  %tempEq16 = icmp eq i32 %tmpAdd12, %tmpAdd15
+  %tempOr = or i1 %tempEq, %tempEq16
+  br label %scEnd
+
+scEnd:                                            ; preds = %noSC, %if
+  %phival = phi i1 [ %tempEq, %if ], [ %tempOr, %noSC ]
+  br i1 %phival, label %ifTrue, label %ifEnd
+
+ifEnd:                                            ; preds = %ifTrue, %scEnd
+  br label %increment
+}
+
+define void @initList(i32 %size) {
+entry:
+  %size1 = alloca i32
+  store i32 %size, i32* %size1
+  %i = alloca i32
+  store i32 0, i32* %i
+  store i32 0, i32* %i
+  br label %for
+
+for:                                              ; preds = %increment, %entry
+  %i2 = load i32, i32* %i
+  %size3 = load i32, i32* %size1
+  %tempLt = icmp slt i32 %i2, %size3
+  br i1 %tempLt, label %do, label %endfor
+
+do:                                               ; preds = %for
+  %i4 = load i32, i32* %i
+  %arrayindex = getelementptr i32, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @list, i32 0, i32 0), i32 %i4
+  %i5 = load i32, i32* %i
+  %tempMul = mul i32 %i5, 2382983
+  %tempSRem = srem i32 %tempMul, 100
+  store i32 %tempSRem, i32* %arrayindex
+  br label %increment
+
+increment:                                        ; preds = %do
+  %i6 = load i32, i32* %i
+  %tmpAdd = add i32 %i6, 1
+  store i32 %tmpAdd, i32* %i
+  br label %for
+
+endfor:                                           ; preds = %for
+  ret void
+}
+
+define void @swap(i32 %leftPtr, i32 %rightPtr) {
+entry:
+  %leftPtr1 = alloca i32
+  store i32 %leftPtr, i32* %leftPtr1
+  %rightPtr2 = alloca i32
+  store i32 %rightPtr, i32* %rightPtr2
+  %temp = alloca i32
+  store i32 0, i32* %temp
+  %leftPtr3 = load i32, i32* %leftPtr1
+  %arrayIndex = getelementptr i32, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @list, i32 0, i32 0), i32 %leftPtr3
+  %loadTmp = load i32, i32* %arrayIndex
+  store i32 %loadTmp, i32* %temp
+  %leftPtr4 = load i32, i32* %leftPtr1
+  %arrayindex = getelementptr i32, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @list, i32 0, i32 0), i32 %leftPtr4
+  %rightPtr5 = load i32, i32* %rightPtr2
+  %arrayIndex6 = getelementptr i32, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @list, i32 0, i32 0), i32 %rightPtr5
+  %loadTmp7 = load i32, i32* %arrayIndex6
+  store i32 %loadTmp7, i32* %arrayindex
+  %rightPtr8 = load i32, i32* %rightPtr2
+  %arrayindex9 = getelementptr i32, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @list, i32 0, i32 0), i32 %rightPtr8
+  %temp10 = load i32, i32* %temp
+  store i32 %temp10, i32* %arrayindex9
+  ret void
+}
+
+define void @quickSort(i32 %left, i32 %right) {
+entry:
+  %left1 = alloca i32
+  store i32 %left, i32* %left1
+  %right2 = alloca i32
+  store i32 %right, i32* %right2
+  br label %if
+
+if:                                               ; preds = %entry
+  %right3 = load i32, i32* %right2
+  %left4 = load i32, i32* %left1
+  %tmpSub = sub i32 %right3, %left4
+  %tempLe = icmp sle i32 %tmpSub, 0
+  br i1 %tempLe, label %ifTrue, label %ifElse
+
+ifTrue:                                           ; preds = %if
+  ret void
+  br label %ifEnd
+
+ifElse:                                           ; preds = %if
+  %pivot = alloca i32
+  store i32 0, i32* %pivot
+  %part = alloca i32
+  store i32 0, i32* %part
+  %right5 = load i32, i32* %right2
+  %arrayIndex = getelementptr i32, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @list, i32 0, i32 0), i32 %right5
+  %loadTmp = load i32, i32* %arrayIndex
+  store i32 %loadTmp, i32* %pivot
+  %left6 = load i32, i32* %left1
+  %right7 = load i32, i32* %right2
+  %pivot8 = load i32, i32* %pivot
+  %calltmp = call i32 @partition(i32 %left6, i32 %right7, i32 %pivot8)
+  store i32 %calltmp, i32* %part
+  %left9 = load i32, i32* %left1
+  %part10 = load i32, i32* %part
+  %tmpSub11 = sub i32 %part10, 1
+  call void @quickSort(i32 %left9, i32 %tmpSub11)
+  %part12 = load i32, i32* %part
+  %tmpAdd = add i32 %part12, 1
+  %right13 = load i32, i32* %right2
+  call void @quickSort(i32 %tmpAdd, i32 %right13)
+  br label %ifEnd
+
+ifEnd:                                            ; preds = %ifTrue, %ifElse
+  ret void
+}
+
+define void @main() {
+entry:
+  %size = alloca i32
+  store i32 0, i32* %size
+  store i32 100, i32* %size
+  %size1 = load i32, i32* %size
+  call void @initList(i32 %size1)
+  %size2 = load i32, i32* %size
+  call void @displayList(i32 0, i32 %size2)
+  %size3 = load i32, i32* %size
+  %tmpSub = sub i32 %size3, 1
+  call void @quickSort(i32 0, i32 %tmpSub)
+  call void @print_string(i8* getelementptr inbounds ([16 x i8], [16 x i8]* @globalstring, i32 0, i32 0))
+  %size4 = load i32, i32* %size
+  call void @displayList(i32 0, i32 %size4)
+  ret void
+}
+
+define i32 @partition(i32 %left, i32 %right, i32 %pivot) {
+entry:
+  %left1 = alloca i32
+  store i32 %left, i32* %left1
+  %right2 = alloca i32
+  store i32 %right, i32* %right2
+  %pivot3 = alloca i32
+  store i32 %pivot, i32* %pivot3
+  %leftPtr = alloca i32
+  store i32 0, i32* %leftPtr
+  %rightPtr = alloca i32
+  store i32 0, i32* %rightPtr
+  %left4 = load i32, i32* %left1
+  %tmpSub = sub i32 %left4, 1
+  store i32 %tmpSub, i32* %leftPtr
+  %right5 = load i32, i32* %right2
+  store i32 %right5, i32* %rightPtr
+  br label %while
+
+while:                                            ; preds = %ifEnd34, %entry
+  br i1 true, label %do, label %endWhile
+
+do:                                               ; preds = %while
+  br label %while6
+
+endWhile:                                         ; preds = %ifTrue30, %while
+  %leftPtr37 = load i32, i32* %leftPtr
+  %right38 = load i32, i32* %right2
+  call void @swap(i32 %leftPtr37, i32 %right38)
+  %leftPtr39 = load i32, i32* %leftPtr
+  ret i32 %leftPtr39
+  ret i32 0
+
+while6:                                           ; preds = %ifEnd, %do
+  br i1 true, label %do7, label %endWhile8
+
+do7:                                              ; preds = %while6
+  %leftPtr9 = load i32, i32* %leftPtr
+  %tmpAdd = add i32 %leftPtr9, 1
+  store i32 %tmpAdd, i32* %leftPtr
+  br label %if
+
+endWhile8:                                        ; preds = %ifTrue, %while6
+  br label %while12
+
+if:                                               ; preds = %do7
+  %leftPtr10 = load i32, i32* %leftPtr
+  %arrayIndex = getelementptr i32, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @list, i32 0, i32 0), i32 %leftPtr10
+  %loadTmp = load i32, i32* %arrayIndex
+  %pivot11 = load i32, i32* %pivot3
+  %temp = icmp sge i32 %loadTmp, %pivot11
+  br i1 %temp, label %ifTrue, label %ifEnd
+
+ifTrue:                                           ; preds = %if
+  br label %endWhile8
+  br label %ifEnd
+
+ifEnd:                                            ; preds = %ifTrue, %if
+  br label %while6
+
+while12:                                          ; preds = %ifEnd28, %endWhile8
+  br i1 true, label %do13, label %endWhile14
+
+do13:                                             ; preds = %while12
+  br label %if15
+
+endWhile14:                                       ; preds = %ifTrue22, %ifTrue16, %while12
+  br label %if29
+
+if15:                                             ; preds = %do13
+  %rightPtr17 = load i32, i32* %rightPtr
+  %tempLe = icmp sle i32 %rightPtr17, 0
+  br i1 %tempLe, label %ifTrue16, label %ifEnd18
+
+ifTrue16:                                         ; preds = %if15
+  br label %endWhile14
+  br label %ifEnd18
+
+ifEnd18:                                          ; preds = %ifTrue16, %if15
+  %rightPtr19 = load i32, i32* %rightPtr
+  %tmpSub20 = sub i32 %rightPtr19, 1
+  store i32 %tmpSub20, i32* %rightPtr
+  br label %if21
+
+if21:                                             ; preds = %ifEnd18
+  %rightPtr23 = load i32, i32* %rightPtr
+  %arrayIndex24 = getelementptr i32, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @list, i32 0, i32 0), i32 %rightPtr23
+  %loadTmp25 = load i32, i32* %arrayIndex24
+  %pivot26 = load i32, i32* %pivot3
+  %tempLe27 = icmp sle i32 %loadTmp25, %pivot26
+  br i1 %tempLe27, label %ifTrue22, label %ifEnd28
+
+ifTrue22:                                         ; preds = %if21
+  br label %endWhile14
+  br label %ifEnd28
+
+ifEnd28:                                          ; preds = %ifTrue22, %if21
+  br label %while12
+
+if29:                                             ; preds = %endWhile14
+  %leftPtr31 = load i32, i32* %leftPtr
+  %rightPtr32 = load i32, i32* %rightPtr
+  %temp33 = icmp sge i32 %leftPtr31, %rightPtr32
+  br i1 %temp33, label %ifTrue30, label %ifElse
+
+ifTrue30:                                         ; preds = %if29
+  br label %endWhile
+  br label %ifEnd34
+
+ifElse:                                           ; preds = %if29
+  %leftPtr35 = load i32, i32* %leftPtr
+  %rightPtr36 = load i32, i32* %rightPtr
+  call void @swap(i32 %leftPtr35, i32 %rightPtr36)
+  br label %ifEnd34
+
+ifEnd34:                                          ; preds = %ifTrue30, %ifElse
+  br label %while
+}

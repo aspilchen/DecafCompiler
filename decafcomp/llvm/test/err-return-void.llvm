@@ -1,0 +1,22 @@
+; ModuleID = 'retvalue'
+source_filename = "Test"
+
+define void @foo() {
+entry:
+  ret void
+}
+
+define i32 @main() {
+entry:
+  br label %if
+
+if:                                               ; preds = %entry
+  call void @foo()
+  br void <badref>, label %ifTrue, label %ifEnd
+
+ifTrue:                                           ; preds = %if
+  br label %ifEnd
+
+ifEnd:                                            ; preds = %ifTrue, %if
+  ret i32 0
+}

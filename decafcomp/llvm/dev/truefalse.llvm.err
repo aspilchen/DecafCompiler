@@ -1,0 +1,48 @@
+; ModuleID = 'TF'
+source_filename = "Test"
+
+@TF = global [32 x i32] zeroinitializer
+@globalstring = private unnamed_addr constant [7 x i8] c"hello\0A\00", align 1
+
+declare void @print_string(i8*)
+
+declare void @print_int(i32)
+
+define i32 @main() {
+entry:
+  call void @print_string(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @globalstring, i32 0, i32 0))
+  br label %if
+
+if:                                               ; preds = %entry
+  br i1 false, label %ifTrue, label %ifElse
+
+ifTrue:                                           ; preds = %if
+  ret i32 0
+  br label %ifEnd
+
+ifElse:                                           ; preds = %if
+  ret i32 0
+  br label %ifEnd
+
+ifEnd:                                            ; preds = %ifTrue, %ifElse
+  %x = alloca i32
+  store i32 0, i32* %x
+  store i32 3, i32* %x
+  %x1 = load i32, i32* %x
+  %tmpSub = sub i32 %x1, 32
+  store i32 %tmpSub, i32* %x
+  %loadTmp = load i32, i32* getelementptr inbounds ([32 x i32], [32 x i32]* @TF, i32 0, i32 0)
+  %tmpAdd = add i32 %loadTmp, 3
+  store i32 %tmpAdd, i32* getelementptr inbounds ([32 x i32], [32 x i32]* @TF, i32 0, i32 0)
+  %loadTmp2 = load i32, i32* getelementptr inbounds ([32 x i32], [32 x i32]* @TF, i32 0, i32 1)
+  %tempDiv = sdiv i32 %loadTmp2, 6
+  store i32 %tempDiv, i32* getelementptr inbounds ([32 x i32], [32 x i32]* @TF, i32 0, i32 1)
+  %loadTmp3 = load i32, i32* getelementptr inbounds ([32 x i32], [32 x i32]* @TF, i32 0, i32 2)
+  %tempSRem = srem i32 %loadTmp3, 3
+  store i32 %tempSRem, i32* getelementptr inbounds ([32 x i32], [32 x i32]* @TF, i32 0, i32 2)
+  %x4 = load i32, i32* %x
+  %loadTmp5 = load i32, i32* getelementptr inbounds ([32 x i32], [32 x i32]* @TF, i32 0, i32 2)
+  %tempSRem6 = srem i32 %x4, %loadTmp5
+  store i32 %tempSRem6, i32* getelementptr inbounds ([32 x i32], [32 x i32]* @TF, i32 0, i32 6)
+  ret i32 0
+}

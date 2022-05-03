@@ -1,0 +1,25 @@
+; ModuleID = 'foo'
+source_filename = "Test"
+
+declare void @print_int(i32)
+
+define i32 @main() {
+entry:
+  %size = alloca i32
+  store i32 0, i32* %size
+  store i32 0, i32* %size
+  br label %if
+
+if:                                               ; preds = %entry
+  %size1 = load i32, i32* %size
+  %temp = icmp sge i32 %size1, 0
+  br i1 %temp, label %ifTrue, label %ifEnd
+
+ifTrue:                                           ; preds = %if
+  %size2 = load i32, i32* %size
+  call void @print_int(i32 %size2)
+  br label %ifEnd
+
+ifEnd:                                            ; preds = %ifTrue, %if
+  ret i32 0
+}

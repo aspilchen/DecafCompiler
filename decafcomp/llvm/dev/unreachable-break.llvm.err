@@ -1,0 +1,48 @@
+; ModuleID = 'reach'
+source_filename = "Test"
+
+@globalstring = private unnamed_addr constant [7 x i8] c"hello\0A\00", align 1
+
+declare void @print_string(i8*)
+
+declare void @print_int(i32)
+
+define i32 @five() {
+entry:
+  ret i32 5
+  %calltmp = call i32 @five()
+  ret i32 %calltmp
+  ret i32 0
+}
+
+define i32 @main() {
+entry:
+  %x = alloca i32
+  store i32 0, i32* %x
+  call void @print_string(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @globalstring, i32 0, i32 0))
+  store i32 5, i32* %x
+  store i32 0, i32* %x
+  br label %for
+
+for:                                              ; preds = %increment, %entry
+  %x1 = load i32, i32* %x
+  %temp = icmp sge i32 %x1, 0
+  br i1 %temp, label %do, label %endfor
+
+do:                                               ; preds = %for
+  br label %endfor
+  %calltmp = call i32 @five()
+  %tempDiv = sdiv i32 %calltmp, 32
+  store i32 %tempDiv, i32* %x
+  br label %increment
+
+increment:                                        ; preds = %do
+  %x2 = load i32, i32* %x
+  %tmpAdd = add i32 %x2, 1
+  store i32 %tmpAdd, i32* %x
+  br label %for
+
+endfor:                                           ; preds = %do, %for
+  ret i32 0
+  ret i32 0
+}

@@ -1,0 +1,7 @@
+; ModuleID = 'QuickSort'
+source_filename = "Test"
+
+define void @main() {
+entry:
+  ret void
+}

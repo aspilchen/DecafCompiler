@@ -1,0 +1,126 @@
+; ModuleID = 'whiles'
+source_filename = "Test"
+
+@globalstring = private unnamed_addr constant [7 x i8] c"hello\0A\00", align 1
+@globalstring.1 = private unnamed_addr constant [2 x i8] c",\00", align 1
+@globalstring.2 = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
+
+declare void @print_string(i8*)
+
+declare void @print_int(i32)
+
+define i32 @main() {
+entry:
+  %x = alloca i32
+  store i32 0, i32* %x
+  %y = alloca i32
+  store i32 0, i32* %y
+  call void @print_string(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @globalstring, i32 0, i32 0))
+  store i32 0, i32* %x
+  br label %while
+
+while:                                            ; preds = %endWhile12, %ifTrue5, %ifTrue, %entry
+  %x1 = load i32, i32* %x
+  %tempLt = icmp slt i32 %x1, 10
+  br i1 %tempLt, label %do, label %endWhile
+
+do:                                               ; preds = %while
+  %x2 = load i32, i32* %x
+  %tmpAdd = add i32 %x2, 1
+  store i32 %tmpAdd, i32* %x
+  br label %if
+
+endWhile:                                         ; preds = %while
+  ret i32 0
+  ret i32 0
+
+if:                                               ; preds = %do
+  %x3 = load i32, i32* %x
+  %tempEq = icmp eq i32 %x3, 5
+  br i1 %tempEq, label %ifTrue, label %ifEnd
+
+ifTrue:                                           ; preds = %if
+  br label %while
+  br label %ifEnd
+
+ifEnd:                                            ; preds = %ifTrue, %if
+  br label %if4
+
+if4:                                              ; preds = %ifEnd
+  %x6 = load i32, i32* %x
+  %tempEq7 = icmp eq i32 %x6, 7
+  br i1 %tempEq7, label %ifTrue5, label %ifEnd8
+
+ifTrue5:                                          ; preds = %if4
+  store i32 100, i32* %x
+  br label %while
+  %x9 = load i32, i32* %x
+  %tmpSub = sub i32 %x9, 1
+  store i32 %tmpSub, i32* %x
+  br label %ifEnd8
+
+ifEnd8:                                           ; preds = %ifTrue5, %if4
+  store i32 0, i32* %y
+  br label %while10
+
+while10:                                          ; preds = %ifEnd28, %ifTrue18, %ifEnd8
+  %y13 = load i32, i32* %y
+  %tempLt14 = icmp slt i32 %y13, 10
+  br i1 %tempLt14, label %do11, label %endWhile12
+
+do11:                                             ; preds = %while10
+  %y15 = load i32, i32* %y
+  %tmpAdd16 = add i32 %y15, 1
+  store i32 %tmpAdd16, i32* %y
+  br label %if17
+
+endWhile12:                                       ; preds = %ifTrue25, %while10
+  br label %while
+
+if17:                                             ; preds = %do11
+  %y19 = load i32, i32* %y
+  %tempGt = icmp sgt i32 %y19, 3
+  br i1 %tempGt, label %noSC, label %scEnd
+
+ifTrue18:                                         ; preds = %scEnd
+  br label %while10
+  %y23 = load i32, i32* %y
+  %tempSRem = srem i32 32, %y23
+  store i32 %tempSRem, i32* %x
+  br label %ifEnd22
+
+noSC:                                             ; preds = %if17
+  %y20 = load i32, i32* %y
+  %tempLt21 = icmp slt i32 %y20, 5
+  %tempAnd = and i1 %tempGt, %tempLt21
+  br label %scEnd
+
+scEnd:                                            ; preds = %noSC, %if17
+  %phival = phi i1 [ %tempGt, %if17 ], [ %tempAnd, %noSC ]
+  br i1 %phival, label %ifTrue18, label %ifEnd22
+
+ifEnd22:                                          ; preds = %ifTrue18, %scEnd
+  br label %if24
+
+if24:                                             ; preds = %ifEnd22
+  %y26 = load i32, i32* %y
+  %tempEq27 = icmp eq i32 %y26, 7
+  br i1 %tempEq27, label %ifTrue25, label %ifEnd28
+
+ifTrue25:                                         ; preds = %if24
+  br label %endWhile12
+  %y29 = load i32, i32* %y
+  %y30 = load i32, i32* %y
+  %tempDiv = sdiv i32 %y29, %y30
+  store i32 %tempDiv, i32* %y
+  br label %ifEnd28
+
+ifEnd28:                                          ; preds = %ifTrue25, %if24
+  %x31 = load i32, i32* %x
+  call void @print_int(i32 %x31)
+  call void @print_string(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @globalstring.1, i32 0, i32 0))
+  %y32 = load i32, i32* %y
+  call void @print_int(i32 %y32)
+  call void @print_string(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @globalstring.2, i32 0, i32 0))
+  br label %while10
+}

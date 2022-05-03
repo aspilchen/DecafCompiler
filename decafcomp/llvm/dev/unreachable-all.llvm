@@ -1,0 +1,67 @@
+; ModuleID = 'reach'
+source_filename = "Test"
+
+@globalstring = private unnamed_addr constant [7 x i8] c"hello\0A\00", align 1
+@globalstring.1 = private unnamed_addr constant [7 x i8] c"hello\0A\00", align 1
+
+declare void @print_string(i8*)
+
+declare void @print_int(i32)
+
+define i32 @five() {
+entry:
+  ret i32 5
+  %calltmp = call i32 @five()
+  ret i32 %calltmp
+  ret i32 0
+}
+
+define i32 @main() {
+entry:
+  %x = alloca i32
+  store i32 0, i32* %x
+  call void @print_string(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @globalstring, i32 0, i32 0))
+  store i32 5, i32* %x
+  store i32 0, i32* %x
+  br label %for
+
+for:                                              ; preds = %increment, %entry
+  %x1 = load i32, i32* %x
+  %temp = icmp sge i32 %x1, 0
+  br i1 %temp, label %do, label %endfor
+
+do:                                               ; preds = %for
+  %calltmp = call i32 @five()
+  %tmpAdd = add i32 %calltmp, 32
+  store i32 %tmpAdd, i32* %x
+  %calltmp2 = call i32 @five()
+  %tmpSub = sub i32 %calltmp2, 32
+  store i32 %tmpSub, i32* %x
+  %calltmp3 = call i32 @five()
+  %tempSRem = srem i32 %calltmp3, 32
+  store i32 %tempSRem, i32* %x
+  call void @print_string(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @globalstring.1, i32 0, i32 0))
+  br label %endfor
+  %calltmp4 = call i32 @five()
+  %tempMul = mul i32 %calltmp4, 32
+  store i32 %tempMul, i32* %x
+  %calltmp5 = call i32 @five()
+  %calltmp6 = call i32 @five()
+  %tmpAdd7 = add i32 %calltmp5, %calltmp6
+  store i32 %tmpAdd7, i32* %x
+  %calltmp8 = call i32 @five()
+  %calltmp9 = call i32 @five()
+  %tmpSub10 = sub i32 %calltmp8, %calltmp9
+  store i32 %tmpSub10, i32* %x
+  br label %increment
+
+increment:                                        ; preds = %do
+  %x11 = load i32, i32* %x
+  %tmpAdd12 = add i32 %x11, 1
+  store i32 %tmpAdd12, i32* %x
+  br label %for
+
+endfor:                                           ; preds = %do, %for
+  ret i32 0
+  ret i32 0
+}

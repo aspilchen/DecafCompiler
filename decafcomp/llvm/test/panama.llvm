@@ -1,0 +1,298 @@
+; ModuleID = 'C'
+source_filename = "Test"
+
+@globalstring = private unnamed_addr constant [7 x i8] c"Panama\00", align 1
+@globalstring.1 = private unnamed_addr constant [6 x i8] c"canal\00", align 1
+@globalstring.2 = private unnamed_addr constant [3 x i8] c"a \00", align 1
+@globalstring.3 = private unnamed_addr constant [3 x i8] c"A \00", align 1
+@globalstring.4 = private unnamed_addr constant [5 x i8] c"plan\00", align 1
+@globalstring.5 = private unnamed_addr constant [4 x i8] c"man\00", align 1
+@globalstring.6 = private unnamed_addr constant [3 x i8] c", \00", align 1
+@globalstring.7 = private unnamed_addr constant [3 x i8] c", \00", align 1
+@globalstring.8 = private unnamed_addr constant [3 x i8] c"--\00", align 1
+@globalstring.9 = private unnamed_addr constant [2 x i8] c"!\00", align 1
+@globalstring.10 = private unnamed_addr constant [5 x i8] c"bash\00", align 1
+@globalstring.11 = private unnamed_addr constant [4 x i8] c"bar\00", align 1
+@globalstring.12 = private unnamed_addr constant [4 x i8] c"foo\00", align 1
+@globalstring.13 = private unnamed_addr constant [4 x i8] c"wat\00", align 1
+
+declare void @print_string(i8*)
+
+define i32 @main() {
+entry:
+  br label %if
+
+if:                                               ; preds = %entry
+  br i1 true, label %noSC, label %scEnd
+
+ifTrue:                                           ; preds = %scEnd2
+  call void @print_string(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @globalstring.13, i32 0, i32 0))
+  br label %ifEnd
+
+noSC:                                             ; preds = %if
+  %calltmp = call i1 @a(i1 true)
+  %tempAnd = and i1 true, %calltmp
+  br label %scEnd
+
+scEnd:                                            ; preds = %noSC, %if
+  %phival = phi i1 [ true, %if ], [ %tempAnd, %noSC ]
+  br i1 %phival, label %scEnd2, label %noSC1
+
+noSC1:                                            ; preds = %scEnd
+  %calltmp3 = call i1 @man()
+  br i1 %calltmp3, label %noSC4, label %scEnd5
+
+scEnd2:                                           ; preds = %scEnd5, %scEnd
+  %phival8 = phi i1 [ %phival, %scEnd ], [ %tempOr, %scEnd5 ]
+  br i1 %phival8, label %ifTrue, label %ifElse
+
+noSC4:                                            ; preds = %noSC1
+  %tempAnd6 = and i1 %calltmp3, false
+  br label %scEnd5
+
+scEnd5:                                           ; preds = %noSC4, %noSC1
+  %phival7 = phi i1 [ %calltmp3, %noSC1 ], [ %tempAnd6, %noSC4 ]
+  %tempOr = or i1 %phival, %phival7
+  br label %scEnd2
+
+ifElse:                                           ; preds = %scEnd2
+  call void @print_string(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @globalstring.6, i32 0, i32 0))
+  br label %if9
+
+ifEnd:                                            ; preds = %ifTrue, %ifEnd18
+  ret i32 0
+
+if9:                                              ; preds = %ifElse
+  %calltmp11 = call i1 @a(i1 false)
+  br i1 %calltmp11, label %noSC12, label %scEnd13
+
+ifTrue10:                                         ; preds = %scEnd13
+  call void @print_string(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @globalstring.12, i32 0, i32 0))
+  br label %ifEnd18
+
+noSC12:                                           ; preds = %if9
+  %calltmp14 = call i1 @canal()
+  %tempAnd15 = and i1 %calltmp11, %calltmp14
+  br label %scEnd13
+
+scEnd13:                                          ; preds = %noSC12, %if9
+  %phival16 = phi i1 [ %calltmp11, %if9 ], [ %tempAnd15, %noSC12 ]
+  br i1 %phival16, label %ifTrue10, label %ifElse17
+
+ifElse17:                                         ; preds = %scEnd13
+  br label %if19
+
+ifEnd18:                                          ; preds = %ifTrue10, %ifEnd26
+  br label %ifEnd
+
+if19:                                             ; preds = %ifElse17
+  br i1 true, label %scEnd22, label %noSC21
+
+ifTrue20:                                         ; preds = %scEnd22
+  br label %if27
+
+noSC21:                                           ; preds = %if19
+  %calltmp23 = call i1 @canal()
+  %tempOr24 = or i1 true, %calltmp23
+  br label %scEnd22
+
+scEnd22:                                          ; preds = %noSC21, %if19
+  %phival25 = phi i1 [ true, %if19 ], [ %tempOr24, %noSC21 ]
+  br i1 %phival25, label %ifTrue20, label %ifEnd26
+
+ifEnd26:                                          ; preds = %ifEnd38, %scEnd22
+  br label %ifEnd18
+
+if27:                                             ; preds = %ifTrue20
+  br i1 true, label %noSC29, label %scEnd30
+
+ifTrue28:                                         ; preds = %scEnd33
+  %flag74 = alloca i1
+  store i1 false, i1* %flag74
+  store i1 true, i1* %flag74
+  br label %while75
+
+noSC29:                                           ; preds = %if27
+  br label %scEnd30
+
+scEnd30:                                          ; preds = %noSC29, %if27
+  %phival31 = phi i1 [ true, %if27 ], [ true, %noSC29 ]
+  br i1 %phival31, label %noSC32, label %scEnd33
+
+noSC32:                                           ; preds = %scEnd30
+  %calltmp34 = call i1 @plan()
+  %tempAnd35 = and i1 %phival31, %calltmp34
+  br label %scEnd33
+
+scEnd33:                                          ; preds = %noSC32, %scEnd30
+  %phival36 = phi i1 [ %phival31, %scEnd30 ], [ %tempAnd35, %noSC32 ]
+  br i1 %phival36, label %ifTrue28, label %ifElse37
+
+ifElse37:                                         ; preds = %scEnd33
+  call void @print_string(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @globalstring.7, i32 0, i32 0))
+  br label %if39
+
+ifEnd38:                                          ; preds = %endWhile77, %ifEnd50
+  br label %ifEnd26
+
+if39:                                             ; preds = %ifElse37
+  %calltmp41 = call i1 @a(i1 false)
+  br i1 %calltmp41, label %scEnd43, label %noSC42
+
+ifTrue40:                                         ; preds = %scEnd43
+  call void @print_string(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @globalstring.10, i32 0, i32 0))
+  br label %ifEnd50
+
+noSC42:                                           ; preds = %if39
+  br i1 true, label %noSC44, label %scEnd45
+
+scEnd43:                                          ; preds = %scEnd45, %if39
+  %phival48 = phi i1 [ %calltmp41, %if39 ], [ %tempOr47, %scEnd45 ]
+  br i1 %phival48, label %ifTrue40, label %ifElse49
+
+noSC44:                                           ; preds = %noSC42
+  br label %scEnd45
+
+scEnd45:                                          ; preds = %noSC44, %noSC42
+  %phival46 = phi i1 [ true, %noSC42 ], [ false, %noSC44 ]
+  %tempOr47 = or i1 %calltmp41, %phival46
+  br label %scEnd43
+
+ifElse49:                                         ; preds = %scEnd43
+  br label %if51
+
+ifEnd50:                                          ; preds = %ifTrue40, %ifEnd67
+  br label %ifEnd38
+
+if51:                                             ; preds = %ifElse49
+  br i1 false, label %scEnd54, label %noSC53
+
+ifTrue52:                                         ; preds = %scEnd63
+  %flag = alloca i1
+  store i1 false, i1* %flag
+  call void @print_string(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @globalstring.8, i32 0, i32 0))
+  store i1 true, i1* %flag
+  br label %while
+
+noSC53:                                           ; preds = %if51
+  br i1 true, label %noSC55, label %scEnd56
+
+scEnd54:                                          ; preds = %scEnd56, %if51
+  %phival61 = phi i1 [ false, %if51 ], [ %tempOr60, %scEnd56 ]
+  br i1 %phival61, label %scEnd63, label %noSC62
+
+noSC55:                                           ; preds = %noSC53
+  %calltmp57 = call i1 @canal()
+  %tempAnd58 = and i1 true, %calltmp57
+  br label %scEnd56
+
+scEnd56:                                          ; preds = %noSC55, %noSC53
+  %phival59 = phi i1 [ true, %noSC53 ], [ %tempAnd58, %noSC55 ]
+  %tempOr60 = or i1 false, %phival59
+  br label %scEnd54
+
+noSC62:                                           ; preds = %scEnd54
+  %calltmp64 = call i1 @man()
+  %tempOr65 = or i1 %phival61, %calltmp64
+  br label %scEnd63
+
+scEnd63:                                          ; preds = %noSC62, %scEnd54
+  %phival66 = phi i1 [ %phival61, %scEnd54 ], [ %tempOr65, %noSC62 ]
+  br i1 %phival66, label %ifTrue52, label %ifEnd67
+
+ifEnd67:                                          ; preds = %endWhile, %scEnd63
+  br label %ifEnd50
+
+while:                                            ; preds = %do, %do, %ifTrue52
+  %flag68 = load i1, i1* %flag
+  br i1 %flag68, label %noSC69, label %scEnd70
+
+do:                                               ; preds = %scEnd70
+  store i1 false, i1* %flag
+  call void @print_string(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @globalstring.9, i32 0, i32 0))
+  br label %while
+  br label %while
+
+endWhile:                                         ; preds = %scEnd70
+  br label %ifEnd67
+
+noSC69:                                           ; preds = %while
+  %calltmp71 = call i1 @panama()
+  %tempAnd72 = and i1 %flag68, %calltmp71
+  br label %scEnd70
+
+scEnd70:                                          ; preds = %noSC69, %while
+  %phival73 = phi i1 [ %flag68, %while ], [ %tempAnd72, %noSC69 ]
+  br i1 %phival73, label %do, label %endWhile
+
+while75:                                          ; preds = %do76, %do76, %ifTrue28
+  %flag78 = load i1, i1* %flag74
+  br i1 %flag78, label %noSC79, label %scEnd80
+
+do76:                                             ; preds = %scEnd80
+  call void @print_string(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @globalstring.11, i32 0, i32 0))
+  store i1 false, i1* %flag74
+  br label %while75
+  br label %while75
+
+endWhile77:                                       ; preds = %scEnd80
+  br label %ifEnd38
+
+noSC79:                                           ; preds = %while75
+  %calltmp81 = call i1 @canal()
+  %tempAnd82 = and i1 %flag78, %calltmp81
+  br label %scEnd80
+
+scEnd80:                                          ; preds = %noSC79, %while75
+  %phival83 = phi i1 [ %flag78, %while75 ], [ %tempAnd82, %noSC79 ]
+  br i1 %phival83, label %do76, label %endWhile77
+}
+
+define i1 @man() {
+entry:
+  call void @print_string(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @globalstring.5, i32 0, i32 0))
+  ret i1 false
+}
+
+define i1 @plan() {
+entry:
+  call void @print_string(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @globalstring.4, i32 0, i32 0))
+  ret i1 false
+  ret i1 false
+}
+
+define i1 @a(i1 %caps) {
+entry:
+  %caps1 = alloca i1
+  store i1 %caps, i1* %caps1
+  br label %if
+
+if:                                               ; preds = %entry
+  %caps2 = load i1, i1* %caps1
+  br i1 %caps2, label %ifTrue, label %ifElse
+
+ifTrue:                                           ; preds = %if
+  call void @print_string(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @globalstring.3, i32 0, i32 0))
+  br label %ifEnd
+
+ifElse:                                           ; preds = %if
+  call void @print_string(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @globalstring.2, i32 0, i32 0))
+  br label %ifEnd
+
+ifEnd:                                            ; preds = %ifTrue, %ifElse
+  ret i1 false
+  ret i1 false
+}
+
+define i1 @canal() {
+entry:
+  call void @print_string(i8* getelementptr inbounds ([6 x i8], [6 x i8]* @globalstring.1, i32 0, i32 0))
+  ret i1 true
+  ret i1 false
+}
+
+define i1 @panama() {
+entry:
+  call void @print_string(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @globalstring, i32 0, i32 0))
+  ret i1 false
+}

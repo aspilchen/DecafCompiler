@@ -1,0 +1,50 @@
+; ModuleID = 'C'
+source_filename = "Test"
+
+declare void @print_int(i32)
+
+define i32 @main() {
+entry:
+  br label %if
+
+if:                                               ; preds = %entry
+  br i1 true, label %ifTrue, label %ifElse
+
+ifTrue:                                           ; preds = %if
+  br label %if1
+
+ifElse:                                           ; preds = %if
+  call void @print_int(i32 1)
+  br label %ifEnd
+
+ifEnd:                                            ; preds = %ifEnd4, %ifElse
+  ret i32 0
+
+if1:                                              ; preds = %ifTrue
+  br i1 false, label %ifTrue2, label %ifElse3
+
+ifTrue2:                                          ; preds = %if1
+  call void @print_int(i32 9)
+  br label %ifEnd4
+
+ifElse3:                                          ; preds = %if1
+  call void @print_int(i32 4)
+  br label %if5
+
+ifEnd4:                                           ; preds = %ifTrue2, %ifEnd8
+  br label %ifEnd
+
+if5:                                              ; preds = %ifElse3
+  br i1 true, label %ifTrue6, label %ifElse7
+
+ifTrue6:                                          ; preds = %if5
+  call void @print_int(i32 2)
+  br label %ifEnd8
+
+ifElse7:                                          ; preds = %if5
+  call void @print_int(i32 11)
+  br label %ifEnd8
+
+ifEnd8:                                           ; preds = %ifTrue6, %ifElse7
+  br label %ifEnd4
+}
